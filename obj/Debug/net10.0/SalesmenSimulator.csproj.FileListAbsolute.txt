@@ -1,0 +1,15 @@
+A:\SalesmenSimulator\bin\Debug\net10.0\SalesmenSimulator.exe
+A:\SalesmenSimulator\bin\Debug\net10.0\SalesmenSimulator.deps.json
+A:\SalesmenSimulator\bin\Debug\net10.0\SalesmenSimulator.runtimeconfig.json
+A:\SalesmenSimulator\bin\Debug\net10.0\SalesmenSimulator.dll
+A:\SalesmenSimulator\bin\Debug\net10.0\SalesmenSimulator.pdb
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.GeneratedMSBuildEditorConfig.editorconfig
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.AssemblyInfoInputs.cache
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.AssemblyInfo.cs
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.csproj.CoreCompileInputs.cache
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.sourcelink.json
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.dll
+A:\SalesmenSimulator\obj\Debug\net10.0\refint\SalesmenSimulator.dll
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.pdb
+A:\SalesmenSimulator\obj\Debug\net10.0\SalesmenSimulator.genruntimeconfig.cache
+A:\SalesmenSimulator\obj\Debug\net10.0\ref\SalesmenSimulator.dll
