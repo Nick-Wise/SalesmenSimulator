@@ -1,8 +1,16 @@
-namespace SalesmenSimulator.obj.Models;
 
-internal class Store
+namespace SalesmenSimulator.Models;
+
+internal class Store(
+    string name,
+    int startingTier = 1,
+    int startingRating = 40,
+    int startingCapacity = 5
+)
 {
-    public int MaxRating => Tier switch
+
+    public string Name => name;
+    private int MaxRating => Tier switch
     {
         1 => 60,
         2 => 70,
@@ -11,7 +19,7 @@ internal class Store
         _ => throw new ArgumentOutOfRangeException(nameof(Tier), $"Invalid Tier: {Tier}")
     };
 
-    public int MaxSize => Tier switch
+    private int MaxCapacity => Tier switch
     {
         1 => 5,
         2 => 10,
@@ -23,25 +31,27 @@ internal class Store
     public int Tier
     {
         get;
-        set => field = Math.Clamp(value, 1, 4);
-    }
+        private set => field = Math.Clamp(value, 1, 4);
+    } = startingTier;
 
     public int Rating
     {
         get;
-        set => field = Math.Clamp(value, 0, MaxRating);
-    }
+        private set => field = Math.Clamp(value, 0, MaxRating);
+    } = startingRating;
 
-    public int Size
+    public int Capacity
     {
         get;
-        set => field = Math.Clamp(value, 5, MaxSize);
+        private set => field = Math.Clamp(value, 5, MaxCapacity);
+    } = startingCapacity;
+
+    public List<Car> Cars { get; private set; } = [];
+
+    public void BuyCar(CarType type)
+    {
+        Console.WriteLine($"Bought {type}");
+        var newCar = new Car(type);
+        Cars.Add(newCar);
     }
-
-    //List of Cars
-
-
-
-
-
 }
