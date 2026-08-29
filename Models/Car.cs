@@ -38,7 +38,7 @@ public class Car(CarType type)
         {
             CarCondition.D => 0.6,
             CarCondition.C => 0.8,
-            CarCondition.B => 0.1,
+            CarCondition.B => 1.0,
             CarCondition.A => 1.2,
             CarCondition.S => 1.4,
             _ => throw new InvalidOperationException($"Invalid Condition: {Condition}")

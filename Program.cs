@@ -1,5 +1,4 @@
-﻿using SalesmenSimulator.Models;
-
+﻿
 string? name = "";
 string? storeName = "";
 

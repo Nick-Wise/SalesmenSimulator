@@ -18,7 +18,7 @@ The location. Single store for now, though the Owner→Stores relationship is bu
   - Car catalog access (which models you can buy)
   - Buy price multiplier
   - Customer budget range (richer customers at higher tiers)
-  - **Rating's hard ceiling** (Tier 1 → 60/100, Tier 2 → 70, Tier 3 → 80, Tier 4 → 100; Tier 5 unbuilt for now, future prestige bonus)
+  - **Rating's hard ceiling** (Tier 1 → 60/100, Tier 2 → 70, Tier 3 → 80, Tisfsfsdiokjhfkljhfjhf;klsjlndfnbhf['] for now, future prestige bonus)
 - **Rating** — earned, 0–100 internally, displayed as 1–5 stars. No floor (bad service always hurts, regardless of Tier). Drives:
   - Daily customer count (+1 customer per 10 raw Rating points)
   - Customer negotiation leniency (via Owner's People Skill interacting with it — the two stats are in tension)
