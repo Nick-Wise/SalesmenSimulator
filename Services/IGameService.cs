@@ -4,5 +4,5 @@ namespace SalesmenSimulator.Services;
 
 public interface IGameService
 {
-    GameStartResult GameSetup(string ownerName, string storeName);
+    GameStartResult GameStartSummary(string ownerName, string storeName);
 }
