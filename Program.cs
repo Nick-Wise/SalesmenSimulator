@@ -23,7 +23,9 @@ while (string.IsNullOrWhiteSpace(storeName))
 }
 
 var gameService = provider.GetRequiredService<IGameService>();
-var result = gameService.GameStartSummary(name, storeName);
+var result = gameService.StartNewGame(name, storeName);
+
+Console.WriteLine($"Hi {result.OwnerName}, your the new owner of {result.StoreName}");
 
 
 

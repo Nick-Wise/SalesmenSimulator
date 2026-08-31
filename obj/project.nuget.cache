@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "lu8/aYg4Jkw=",
+  "success": true,
+  "projectFilePath": "A:\\SalesmenSimulator\\SalesmenSimulator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nickw\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.11\\microsoft.extensions.dependencyinjection.10.0.11.nupkg.sha512",
+    "C:\\Users\\nickw\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.11\\microsoft.extensions.dependencyinjection.abstractions.10.0.11.nupkg.sha512"
+  ],
+  "logs": []
+}

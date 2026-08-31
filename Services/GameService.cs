@@ -2,30 +2,21 @@ namespace SalesmenSimulator.Services;
 
 internal class GameService : IGameService
 {
-    private Owner _owner;
-    private Store _store;
+    private readonly ISessionFactory _sessionFactory;
+    private GameSession? _session;
 
-    private GameService(Owner owner, Store store)
+    public GameService(ISessionFactory sessionFactory)
     {
-        _owner = owner;
-        _store = store;
+        _sessionFactory = sessionFactory;
     }
-
-    public static GameService StartNewGame(string ownerName, string storeName)
+    public GameStartResult StartNewGame(string ownerName, string storeName)
     {
-        var owner = new Owner(ownerName);
-        var store = new Store(storeName);
+        _session = _sessionFactory.Create(ownerName, storeName);
 
-        return new GameService(owner, store);
-    }
-
-
-    public GameStartResult GameStartSummary(string ownerName, string storeName)
-    {
         return new GameStartResult
         {
-            OwnerName = _owner.Name,
-            StoreName = _store.Name
+            OwnerName = _session.Owner.Name,
+            StoreName = _session.Store.Name
         };
     }
 }

@@ -1,7 +1,7 @@
 
 namespace SalesmenSimulator.Models;
 
-internal class Store(
+public class Store(
     string name,
     int startingTier = 1,
     int startingRating = 40,
