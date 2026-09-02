@@ -1,27 +1,12 @@
-
 namespace SalesmenSimulator.Models;
 
-public class Car(CarType type)
+public class Car(CarType type, CarCondition condition)
 {
-    public CarType Type => type;
-    public CarCondition Condition => GetCondition();
+    public CarType Type = type;
+    public CarCondition Condition = condition;
     public decimal BuyPrice => CalculateBuyPrice();
 
     public decimal SellPrice { get; set; }
-
-    private CarCondition GetCondition()
-    {
-        int randomNum = Random.Shared.Next(100);
-        return randomNum switch
-        {
-            < 10 => CarCondition.D,
-            < 35 => CarCondition.C,
-            < 65 => CarCondition.B,
-            < 90 => CarCondition.A,
-            _ => CarCondition.S,
-
-        };
-    }
 
     private decimal CalculateBuyPrice()
     {

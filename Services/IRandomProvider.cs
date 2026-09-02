@@ -1,0 +1,6 @@
+namespace SalesmenSimulator.Services;
+
+public interface IRandomProvider
+{
+    int Next(int max);
+}

@@ -1,4 +1,3 @@
-
 namespace SalesmenSimulator.Models;
 
 public class Store(
@@ -47,11 +46,4 @@ public class Store(
     } = startingCapacity;
 
     public List<Car> Cars { get; private set; } = [];
-
-    public void BuyCar(CarType type)
-    {
-        Console.WriteLine($"Bought {type}");
-        var newCar = new Car(type);
-        Cars.Add(newCar);
-    }
 }

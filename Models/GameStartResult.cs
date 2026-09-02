@@ -1,7 +1,7 @@
 namespace SalesmenSimulator.Models;
 
-public class GameStartResult
+public class GameStartResult(string ownerName, string storeName)
 {
-    public string OwnerName { get; set; }
-    public string StoreName { get; set; }
+    public string OwnerName = ownerName;
+    public string StoreName = storeName;
 }
