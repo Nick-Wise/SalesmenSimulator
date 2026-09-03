@@ -9,6 +9,7 @@ public static class ServiceRegistration
     services.AddSingleton<ISessionFactory, SessionFactory>();
     services.AddScoped<IRandomProvider, SystemRandomProvider>();
     services.AddScoped<ICarGeneratorService, CarGeneratorService>();
+    services.AddScoped<IRerollService, RerollService>();
     return services;
   }
 }

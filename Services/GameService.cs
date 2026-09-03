@@ -8,18 +8,29 @@ public interface IGameService
 internal class GameService : IGameService
 {
     private readonly ISessionFactory _sessionFactory;
-    private readonly ICarGeneratorService _carGenerator;
+    private readonly IRerollService _rerollService;
     private GameSession? _session;
 
-    public GameService(ISessionFactory sessionFactory, ICarGeneratorService carGenerator)
+    public GameService(ISessionFactory sessionFactory, IRerollService rerollService)
     {
         _sessionFactory = sessionFactory;
-        _carGenerator = carGenerator;
+        _rerollService = rerollService;
     }
     public GameStartResult StartNewGame(string ownerName, string storeName)
     {
         _session = _sessionFactory.Create(ownerName, storeName);
 
         return new GameStartResult(_session.Owner.Name, _session.Store.Name);
+    }
+
+    public RestockResult StartRestock()
+    {
+
+    }
+
+    private bool SessionExists()
+    {
+        if (_session is null) return false;
+        else return true;
     }
 }
