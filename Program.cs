@@ -26,6 +26,16 @@ var gameService = provider.GetRequiredService<IGameService>();
 var result = gameService.StartNewGame(name, storeName);
 
 Console.WriteLine($"Hi {result.OwnerName}, your the new owner of {result.StoreName}");
+DisplayGameStatus();
+
+
+void DisplayGameStatus()
+{
+  var status = gameService.GetGameStatus();
+  Console.WriteLine($"Balance: {status.Balance}");
+  Console.WriteLine($"Inventory: {(status.Inventory.Count > 0 ? string.Join(", ", status.Inventory) : "Empty")}");
+  Console.WriteLine($"Capacity: {status.Inventory.Count}/{status.Capacity}");
+}
 
 
 

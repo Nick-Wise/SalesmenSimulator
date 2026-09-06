@@ -3,6 +3,7 @@ namespace SalesmenSimulator.Services;
 public interface IGameService
 {
     GameStartResult StartNewGame(string ownerName, string storeName);
+    GameStatus GetGameStatus();
 }
 
 internal class GameService : IGameService
@@ -10,6 +11,7 @@ internal class GameService : IGameService
     private readonly ISessionFactory _sessionFactory;
     private readonly IRerollService _rerollService;
     private GameSession? _session;
+    private protected GameSession Session => GetActiveSession();
 
     public GameService(ISessionFactory sessionFactory, IRerollService rerollService)
     {
@@ -23,14 +25,23 @@ internal class GameService : IGameService
         return new GameStartResult(_session.Owner.Name, _session.Store.Name);
     }
 
-    public RestockResult StartRestock()
+    public GameStatus GetGameStatus()
     {
-
+        return new GameStatus
+        (
+            Session.Owner.Balance,
+            Session.Store.Cars,
+            Session.Store.Capacity
+        );
     }
 
-    private bool SessionExists()
+    private GameSession GetActiveSession()
     {
-        if (_session is null) return false;
-        else return true;
+        if (_session is null)
+        {
+            throw new InvalidOperationException("No active game session.");
+        }
+        return _session;
     }
+
 }
