@@ -19,16 +19,16 @@ public class Car(CarType type, CarCondition condition)
             _ => throw new InvalidOperationException($"Unexpected Type: {Type}")
         };
 
-        double conditionMultiplier = Condition switch
+        decimal conditionMultiplier = Condition switch
         {
-            CarCondition.D => 0.6,
-            CarCondition.C => 0.8,
-            CarCondition.B => 1.0,
-            CarCondition.A => 1.2,
-            CarCondition.S => 1.4,
+            CarCondition.D => 0.6m,
+            CarCondition.C => 0.8m,
+            CarCondition.B => 1.0m,
+            CarCondition.A => 1.2m,
+            CarCondition.S => 1.4m,
             _ => throw new InvalidOperationException($"Invalid Condition: {Condition}")
         };
 
-        return basePrice * (decimal)conditionMultiplier;
+        return basePrice * conditionMultiplier;
     }
 }

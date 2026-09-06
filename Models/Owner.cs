@@ -2,7 +2,7 @@ namespace SalesmenSimulator.Models;
 
 public class Owner(
     string name,
-    decimal startingBalance = 10000m,
+    decimal startingBalance = 100000m,
     int startingPeopleSkills = 1,
     int startingTechnicalSkills = 1)
 {
@@ -31,7 +31,7 @@ public class Owner(
         return Balance += amount;
     }
 
-    internal (bool success, decimal currentBalance) SpendCash(decimal amount)
+    internal (bool success, decimal newBalance) SpendCash(decimal amount)
     {
 
         if (amount > Balance)

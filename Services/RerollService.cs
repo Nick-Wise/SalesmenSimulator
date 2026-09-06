@@ -2,7 +2,8 @@ namespace SalesmenSimulator.Services;
 
 public interface IRerollService
 {
-    public List<Car> Reroll();
+    public List<Car> Roll();
+    public decimal CalculateRerollCost(int numberOfRerolls);
 }
 
 public class RerollService : IRerollService
@@ -14,14 +15,13 @@ public class RerollService : IRerollService
     {
         _carGenerator = carGenerator;
     }
-    public List<Car> Reroll()
+    public List<Car> Roll()
     {
         var batch = new List<Car>();
         for (int i = 0; i < _batchSize; i++)
         {
             batch.Add(_carGenerator.GenerateCar());
         }
-
         return batch;
     }
 
