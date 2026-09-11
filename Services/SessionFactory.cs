@@ -2,18 +2,18 @@ namespace SalesmenSimulator.Services;
 
 public interface ISessionFactory
 {
-    GameSession Create(string ownerName, string storeName);
-    GameSession Load();
+    GameState Create(string ownerName, string storeName);
+    GameState Load();
 }
 
 public class SessionFactory : ISessionFactory
 {
-    public GameSession Create(string ownerName, string storeName)
+    public GameState Create(string ownerName, string storeName)
     {
-        return new GameSession(new Owner(ownerName), new Store(storeName));
+        return new GameState(new Owner(ownerName), new Store(storeName));
     }
 
-    public GameSession Load()
+    public GameState Load()
     {
         throw new NotImplementedException();
     }

@@ -27,23 +27,20 @@ var result = gameService.StartNewGame(name, storeName);
 
 Console.WriteLine($"Hi {result.OwnerName}, your the new owner of {result.StoreName}");
 
-
+#region Restock Phase
 Console.WriteLine("-------- Restock Phase --------");
-gameService.StartRestock();
-RollResult? rollResult = gameService.RollCars();
+RollStatus rollStatus = gameService.StartRestock();
+
 bool restocking = true;
 while (restocking)
 {
-  var gameStatus = gameService.GetGameStatus();
-  if (gameStatus.Inventory.Count == gameStatus.Capacity)
-  {
-    Console.WriteLine("Inventory is full.");
-    restocking = false;
-    break;
-  }
+  GameDisplayModel session = gameService.GetGameDisplayModel();
+  DisplayGameInfo();
 
-  DisplayGameStatus();
+
+
   Console.WriteLine("Available Cars:");
+  RollDisplayModel rollResult = gameService.GetRollDisplayModel();
   Console.WriteLine("""
    _____________________________________  
   | Index | Type  | Condition |  Price  |
@@ -63,7 +60,13 @@ while (restocking)
   var input = Console.ReadLine();
   if (input?.ToLower() == "r")
   {
-    rollResult = gameService.RollCars();
+    rollStatus = gameService.RollCars();
+    if (rollStatus is RollStatus.InsufficientFunds)
+    {
+      Console.ForegroundColor = ConsoleColor.DarkYellow;
+      Console.WriteLine("Not enough money to reroll");
+      Console.ResetColor();
+    }
   }
   else if (input?.ToLower() == "f")
   {
@@ -71,20 +74,36 @@ while (restocking)
   }
   else if (int.TryParse(input, out int index) && index >= 1 && index <= rollResult?.Cars.Count)
   {
-    gameService.BuyCar(index - 1);
+    BuyStatus buyStatus = gameService.BuyCar(index - 1);
+    if (buyStatus is BuyStatus.InsufficientFunds)
+    {
+      Console.ForegroundColor = ConsoleColor.DarkYellow;
+      Console.WriteLine("Not enough money to buy that car");
+      Console.ResetColor();
+    }
+
+    if (buyStatus is BuyStatus.InventoryFull)
+    {
+      Console.ForegroundColor = ConsoleColor.DarkYellow;
+      Console.WriteLine("Inventory Full");
+      Console.ResetColor();
+    }
   }
 }
+#endregion RestockPhase
 
-void DisplayGameStatus()
+void DisplayGameInfo()
 {
-  var status = gameService.GetGameStatus();
-  Console.WriteLine($"Balance: {status.Balance}");
+  GameDisplayModel info = gameService.GetGameDisplayModel();
+  Console.ForegroundColor = ConsoleColor.Green;
+  Console.WriteLine($"Balance: {info.Balance:C}");
+  Console.ResetColor();
   Console.WriteLine($"Inventory:");
-  foreach (var car in status.Inventory)
+  foreach (var car in info.Inventory)
   {
     Console.WriteLine($"- Type: {car.Type} Condition: {car.Condition}");
   }
-  Console.WriteLine($"Capacity: {status.Inventory.Count}/{status.Capacity}");
+  Console.WriteLine($"Capacity: {info.Inventory.Count}/{info.Capacity}");
 }
 
 

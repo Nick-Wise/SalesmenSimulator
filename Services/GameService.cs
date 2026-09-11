@@ -3,18 +3,19 @@ namespace SalesmenSimulator.Services;
 public interface IGameService
 {
     GameStartResult StartNewGame(string ownerName, string storeName);
-    GameStatus GetGameStatus();
-    void StartRestock();
-    RollResult? RollCars();
-    void BuyCar(int index);
+    GameDisplayModel GetGameDisplayModel();
+    RollStatus StartRestock();
+    RollStatus RollCars();
+    RollDisplayModel GetRollDisplayModel();
+    BuyStatus BuyCar(int index);
 }
 
 internal class GameService : IGameService
 {
     private readonly ISessionFactory _sessionFactory;
     private readonly IRerollService _rerollService;
-    private GameSession? _session;
-    private protected GameSession Session => GetActiveSession();
+    private GameState? _session;
+    private protected GameState Session => GetActiveSession();
 
     public GameService(ISessionFactory sessionFactory, IRerollService rerollService)
     {
@@ -28,29 +29,33 @@ internal class GameService : IGameService
         return new GameStartResult(_session.Owner.Name, _session.Store.Name);
     }
 
-    public GameStatus GetGameStatus()
+    public GameDisplayModel GetGameDisplayModel()
     {
-        return new GameStatus
+        return new GameDisplayModel
         (
             Session.Owner.Balance,
-            Session.Store.Cars,
+            Session.Store.Inventory,
             Session.Store.Capacity
         );
     }
 
-    public void StartRestock()
+    public RollStatus StartRestock()
     {
         Session.ResetRerolls();
+        List<Car> batch = _rerollService.Roll();
+        Session.SetBatch(batch);
+        Session.UpdateRerollCost(_rerollService.CalculateRerollCost(Session.RerollsUsed));
+        return RollStatus.Success;
     }
 
-    public RollResult? RollCars()
+    public RollStatus RollCars()
     {
-        var rerollCost = Session.CurrentRerollCost;
-        var (success, _) = Session.Owner.SpendCash(rerollCost);
+        decimal rerollCost = Session.CurrentRerollCost;
+        WithdrawResult result = Session.Owner.TryWithdrawCash(rerollCost);
 
-        if (!success)
+        if (!result.Success)
         {
-            return null;
+            return RollStatus.InsufficientFunds;
         }
 
         var batch = _rerollService.Roll();
@@ -60,24 +65,33 @@ internal class GameService : IGameService
         decimal nextRerollCost = _rerollService.CalculateRerollCost(Session.RerollsUsed);
         Session.UpdateRerollCost(nextRerollCost);
 
-        return new RollResult(batch, nextRerollCost);
+        return RollStatus.Success;
     }
 
-    public void BuyCar(int index)
+    public RollDisplayModel GetRollDisplayModel() => new RollDisplayModel(Session.CurrentBatch, Session.CurrentRerollCost);
+
+    public BuyStatus BuyCar(int index)
     {
         var car = Session.CurrentBatch[index];
-        if (Session.Store.Cars.Count < Session.Store.Capacity && Session.Owner.Balance >= car.BuyPrice)
+
+        if (Session.Store.Inventory.Count >= Session.Store.Capacity)
         {
-            var (success, newBalance) = Session.Owner.SpendCash(car.BuyPrice);
-            if (success)
-            {
-                Session.Store.Cars.Add(car);
-            }
+            return BuyStatus.InventoryFull;
         }
 
+        WithdrawResult result = Session.Owner.TryWithdrawCash(car.BuyPrice);
+
+        if (!result.Success)
+        {
+            return BuyStatus.InsufficientFunds;
+        }
+
+        Session.Store.Inventory.Add(car);
+        Session.RemoveFromBatch(index);
+        return BuyStatus.Success;
     }
 
-    private GameSession GetActiveSession()
+    private GameState GetActiveSession()
     {
         if (_session is null)
         {

@@ -31,17 +31,16 @@ public class Owner(
         return Balance += amount;
     }
 
-    internal (bool success, decimal newBalance) SpendCash(decimal amount)
+    internal WithdrawResult TryWithdrawCash(decimal amount)
     {
 
         if (amount > Balance)
         {
-            Console.WriteLine("Insufficient Funds");
-            return (false, Balance);
+            return new WithdrawResult(false, Balance);
         }
 
         Balance -= amount;
-        return (true, Balance);
+        return new WithdrawResult(true, Balance);
     }
 
     internal int ModifyPeopleSkills(int skills = 0)

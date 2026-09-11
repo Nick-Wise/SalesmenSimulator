@@ -25,5 +25,5 @@ public class RerollService : IRerollService
         return batch;
     }
 
-    public decimal CalculateRerollCost(int numberOfRerolls) => BasePrice * numberOfRerolls;
+    public decimal CalculateRerollCost(int numberOfRerolls) => BasePrice * (numberOfRerolls + 1);
 }

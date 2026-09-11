@@ -45,5 +45,5 @@ public class Store(
         private set => field = Math.Clamp(value, 5, MaxCapacity);
     } = startingCapacity;
 
-    public List<Car> Cars { get; private set; } = [];
+    public List<Car> Inventory { get; private set; } = [];
 }
