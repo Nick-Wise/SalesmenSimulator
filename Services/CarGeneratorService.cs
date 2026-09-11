@@ -34,7 +34,7 @@ public class CarGeneratorService : ICarGeneratorService
 
     private CarType RollCarType()
     {
-        int randomNum = _randomProvider.Next(3);
+        int randomNum = _randomProvider.Next(4);
         return randomNum switch
         {
             0 => CarType.Sedan,

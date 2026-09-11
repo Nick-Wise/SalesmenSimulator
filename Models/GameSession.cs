@@ -39,7 +39,7 @@ public class GameState(Owner owner, Store store)
     public void SetBatch(IEnumerable<Car> batch) => _currentBatch = batch.ToList();
     public void RemoveFromBatch(int index)
     {
-        if (index < 0 || index > _currentBatch.Count())
+        if (index < 0 || index >= _currentBatch.Count())
         {
             throw new ArgumentOutOfRangeException("invalid batch index");
         }

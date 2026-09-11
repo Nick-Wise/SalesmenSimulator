@@ -2,8 +2,8 @@ namespace SalesmenSimulator.Models;
 
 public class Car(CarType type, CarCondition condition)
 {
-    public CarType Type = type;
-    public CarCondition Condition = condition;
+    public CarType Type { get; } = type;
+    public CarCondition Condition { get; } = condition;
     public decimal BuyPrice => CalculateBuyPrice();
 
     public decimal SellPrice { get; set; }
