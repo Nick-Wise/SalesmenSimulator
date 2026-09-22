@@ -2,7 +2,7 @@ namespace SalesmenSimulator.Models;
 
 public class Owner(
     string name,
-    decimal startingBalance = 100000m,
+    decimal startingBalance = 0,
     int startingPeopleSkills = 1,
     int startingTechnicalSkills = 1)
 {

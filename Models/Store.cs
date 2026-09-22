@@ -46,4 +46,9 @@ public class Store(
     } = startingCapacity;
 
     public List<Car> Inventory { get; private set; } = [];
+
+    public bool IsFull()
+    {
+        return Inventory.Count >= Capacity;
+    }
 }

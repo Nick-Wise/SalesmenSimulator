@@ -4,7 +4,7 @@ public interface IGameService
 {
     GameStartResult StartNewGame(string ownerName, string storeName);
     GameDisplayModel GetGameDisplayModel();
-    RollStatus StartRestock();
+    RestockStatus StartRestock();
     RollStatus RollCars();
     RollDisplayModel GetRollDisplayModel();
     BuyStatus BuyCar(int index);
@@ -39,13 +39,26 @@ internal class GameService : IGameService
         );
     }
 
-    public RollStatus StartRestock()
+    public RestockStatus StartRestock()
     {
+        if (Session.Store.IsFull())
+        {
+            return RestockStatus.InventoryFull;
+        }
+
         Session.ResetRerolls();
         List<Car> batch = _rerollService.Roll();
+
+        bool canBuy = batch.Any(b => b.BuyPrice < Session.Owner.Balance);
+
+        if (!canBuy)
+        {
+            return RestockStatus.InsufficientFunds;
+        }
+
         Session.SetBatch(batch);
         Session.UpdateRerollCost(_rerollService.CalculateRerollCost(Session.RerollsUsed));
-        return RollStatus.Success;
+        return RestockStatus.Success;
     }
 
     public RollStatus RollCars()

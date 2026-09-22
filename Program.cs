@@ -28,10 +28,9 @@ var result = gameService.StartNewGame(name, storeName);
 Console.WriteLine($"Hi {result.OwnerName}, your the new owner of {result.StoreName}");
 
 #region Restock Phase
-Console.WriteLine("-------- Restock Phase --------");
-RollStatus rollStatus = gameService.StartRestock();
 
-bool restocking = true;
+bool restocking = InitializeRestock(gameService.StartRestock());
+
 while (restocking)
 {
   GameDisplayModel session = gameService.GetGameDisplayModel();
@@ -60,7 +59,7 @@ while (restocking)
   var input = Console.ReadLine();
   if (input?.ToLower() == "r")
   {
-    rollStatus = gameService.RollCars();
+    RollStatus rollStatus = gameService.RollCars();
     if (rollStatus is RollStatus.InsufficientFunds)
     {
       Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -91,6 +90,25 @@ while (restocking)
   }
 }
 #endregion RestockPhase
+
+
+bool InitializeRestock(RestockStatus status)
+{
+  switch (status)
+  {
+    case RestockStatus.InsufficientFunds:
+      Console.WriteLine("Insufficient funds, skipping restock ");
+      return false;
+    case RestockStatus.InventoryFull:
+      Console.WriteLine("Inventory full, skipping restock phase");
+      return false;
+    case RestockStatus.Success:
+      Console.WriteLine("-------- Restock Phase --------");
+      return true;
+    default:
+      throw new InvalidOperationException($"Unhandled RestockStatus: {status}");
+  }
+}
 
 void DisplayGameInfo()
 {
