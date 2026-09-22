@@ -96,9 +96,6 @@ bool InitializeRestock(RestockStatus status)
 {
   switch (status)
   {
-    case RestockStatus.InsufficientFunds:
-      Console.WriteLine("Insufficient funds, skipping restock ");
-      return false;
     case RestockStatus.InventoryFull:
       Console.WriteLine("Inventory full, skipping restock phase");
       return false;

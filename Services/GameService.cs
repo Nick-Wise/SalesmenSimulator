@@ -49,13 +49,6 @@ internal class GameService : IGameService
         Session.ResetRerolls();
         List<Car> batch = _rerollService.Roll();
 
-        bool canBuy = batch.Any(b => b.BuyPrice < Session.Owner.Balance);
-
-        if (!canBuy)
-        {
-            return RestockStatus.InsufficientFunds;
-        }
-
         Session.SetBatch(batch);
         Session.UpdateRerollCost(_rerollService.CalculateRerollCost(Session.RerollsUsed));
         return RestockStatus.Success;
