@@ -26,7 +26,7 @@ var gameService = provider.GetRequiredService<IGameService>();
 var result = gameService.StartNewGame(name, storeName);
 
 Console.WriteLine($"Hi {result.OwnerName}, your the new owner of {result.StoreName}");
-
+/*
 #region Restock Phase
 
 bool restocking = InitializeRestock(gameService.StartRestock());
@@ -90,7 +90,17 @@ while (restocking)
   }
 }
 #endregion RestockPhase
+*/
 
+#region Customer Phase
+
+var customerService = new CustomerGeneratorService(new SystemRandomProvider());
+for (int i = 0; i < 5; i++)
+{
+  var customerDifficulty = customerService.TestDifficulty();
+  Console.WriteLine($"Difficulty is {customerDifficulty}");
+}
+#endregion Customer Phase
 
 bool InitializeRestock(RestockStatus status)
 {
@@ -120,15 +130,3 @@ void DisplayGameInfo()
   }
   Console.WriteLine($"Capacity: {info.Inventory.Count}/{info.Capacity}");
 }
-
-
-
-
-
-
-
-
-
-
-
-

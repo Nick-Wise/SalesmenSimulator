@@ -10,6 +10,7 @@ public static class ServiceRegistration
     services.AddScoped<IRandomProvider, SystemRandomProvider>();
     services.AddScoped<ICarGeneratorService, CarGeneratorService>();
     services.AddScoped<IRerollService, RerollService>();
+    services.AddScoped<ICustomerGeneratorService, CustomerGeneratorService>();
     return services;
   }
 }
