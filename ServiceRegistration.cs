@@ -7,6 +7,7 @@ public static class ServiceRegistration
   {
     services.AddSingleton<IGameService, GameService>();
     services.AddSingleton<ISessionFactory, SessionFactory>();
+    services.AddSingleton<ICarCatalog, CarCatalog>();
     services.AddScoped<IRandomProvider, SystemRandomProvider>();
     services.AddScoped<ICarGeneratorService, CarGeneratorService>();
     services.AddScoped<IRerollService, RerollService>();

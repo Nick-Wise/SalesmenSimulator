@@ -94,12 +94,6 @@ while (restocking)
 
 #region Customer Phase
 
-var customerService = new CustomerGeneratorService(new SystemRandomProvider());
-for (int i = 0; i < 5; i++)
-{
-  var customerDifficulty = customerService.TestDifficulty();
-  Console.WriteLine($"Difficulty is {customerDifficulty}");
-}
 #endregion Customer Phase
 
 bool InitializeRestock(RestockStatus status)
