@@ -5,7 +5,7 @@ namespace SalesmenSimulator.Services;
 
 public interface ICustomerGeneratorService
 {
-    CustomerDifficulty TestDifficulty();
+
 }
 
 public class CustomerGeneratorService(IRandomProvider randomProvider) : ICustomerGeneratorService
@@ -18,15 +18,10 @@ public class CustomerGeneratorService(IRandomProvider randomProvider) : ICustome
         [CustomerDifficulty.Hard] = 1
     }.ToFrozenDictionary();
 
-
-    public CustomerDifficulty TestDifficulty()
-    {
-        return ChooseDifficulty();
-    }
-
-
+#warning TODO: Refactor this Hard to understand
     private CustomerDifficulty ChooseDifficulty()
     {
+
         int total = _difficultyDistro.Sum(x => x.Value);
         int roll = randomProvider.Next(total);
 

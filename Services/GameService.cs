@@ -47,9 +47,10 @@ internal class GameService : IGameService
         }
 
         Session.ResetRerolls();
-        List<Car> batch = _rerollService.Roll();
 
+        List<Car> batch = _rerollService.Roll();
         Session.SetBatch(batch);
+
         Session.UpdateRerollCost(_rerollService.CalculateRerollCost(Session.RerollsUsed));
         return RestockStatus.Success;
     }

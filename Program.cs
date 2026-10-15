@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SalesmenSimulator.Services;
+using SalesmenSimulator.Helpers;
 
 var services = new ServiceCollection();
 services.AddGameServices();
@@ -26,10 +27,10 @@ var gameService = provider.GetRequiredService<IGameService>();
 var result = gameService.StartNewGame(name, storeName);
 
 Console.WriteLine($"Hi {result.OwnerName}, your the new owner of {result.StoreName}");
-/*
+
 #region Restock Phase
 
-bool restocking = InitializeRestock(gameService.StartRestock());
+bool restocking = PhaseHelpers.InitializeRestock(gameService.StartRestock());
 
 while (restocking)
 {
@@ -90,26 +91,10 @@ while (restocking)
   }
 }
 #endregion RestockPhase
-*/
 
 #region Customer Phase
 
 #endregion Customer Phase
-
-bool InitializeRestock(RestockStatus status)
-{
-  switch (status)
-  {
-    case RestockStatus.InventoryFull:
-      Console.WriteLine("Inventory full, skipping restock phase");
-      return false;
-    case RestockStatus.Success:
-      Console.WriteLine("-------- Restock Phase --------");
-      return true;
-    default:
-      throw new InvalidOperationException($"Unhandled RestockStatus: {status}");
-  }
-}
 
 void DisplayGameInfo()
 {
