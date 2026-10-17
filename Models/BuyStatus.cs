@@ -5,5 +5,6 @@ namespace SalesmenSimulator.Models
         Success,
         InsufficientFunds,
         InventoryFull,
+        InvalidIndex
     }
 }

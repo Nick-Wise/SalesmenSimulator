@@ -5,7 +5,7 @@ public interface IGameService
     GameStartResult StartNewGame(string ownerName, string storeName);
     GameDisplayModel GetGameDisplayModel();
     RestockStatus StartRestock();
-    RollStatus RollCars();
+    RollStatus RollNewCarBatch();
     RollDisplayModel GetRollDisplayModel();
     BuyStatus BuyCar(int index);
 }
@@ -13,14 +13,14 @@ public interface IGameService
 internal class GameService : IGameService
 {
     private readonly ISessionFactory _sessionFactory;
-    private readonly IRerollService _rerollService;
+    private readonly IRestockService _restockService;
     private GameState? _session;
     private protected GameState Session => GetActiveSession();
 
-    public GameService(ISessionFactory sessionFactory, IRerollService rerollService)
+    public GameService(ISessionFactory sessionFactory, IRestockService restockService)
     {
         _sessionFactory = sessionFactory;
-        _rerollService = rerollService;
+        _restockService = restockService;
     }
     public GameStartResult StartNewGame(string ownerName, string storeName)
     {
@@ -39,64 +39,13 @@ internal class GameService : IGameService
         );
     }
 
-    public RestockStatus StartRestock()
-    {
-        if (Session.Store.IsFull())
-        {
-            return RestockStatus.InventoryFull;
-        }
+    public RestockStatus StartRestock() => _restockService.StartRestock(Session);
 
-        Session.ResetRerolls();
-
-        List<Car> batch = _rerollService.Roll();
-        Session.SetBatch(batch);
-
-        Session.UpdateRerollCost(_rerollService.CalculateRerollCost(Session.RerollsUsed));
-        return RestockStatus.Success;
-    }
-
-    public RollStatus RollCars()
-    {
-        decimal rerollCost = Session.CurrentRerollCost;
-        WithdrawResult result = Session.Owner.TryWithdrawCash(rerollCost);
-
-        if (!result.Success)
-        {
-            return RollStatus.InsufficientFunds;
-        }
-
-        var batch = _rerollService.Roll();
-        Session.SetBatch(batch);
-
-        Session.IncrementRerolls();
-        decimal nextRerollCost = _rerollService.CalculateRerollCost(Session.RerollsUsed);
-        Session.UpdateRerollCost(nextRerollCost);
-
-        return RollStatus.Success;
-    }
+    public RollStatus RollNewCarBatch() => _restockService.RollNewCarBatch(Session);
 
     public RollDisplayModel GetRollDisplayModel() => new RollDisplayModel(Session.CurrentBatch, Session.CurrentRerollCost);
 
-    public BuyStatus BuyCar(int index)
-    {
-        var car = Session.CurrentBatch[index];
-
-        if (Session.Store.Inventory.Count >= Session.Store.Capacity)
-        {
-            return BuyStatus.InventoryFull;
-        }
-
-        WithdrawResult result = Session.Owner.TryWithdrawCash(car.BuyPrice);
-
-        if (!result.Success)
-        {
-            return BuyStatus.InsufficientFunds;
-        }
-
-        Session.Store.Inventory.Add(car);
-        Session.RemoveFromBatch(index);
-        return BuyStatus.Success;
-    }
+    public BuyStatus BuyCar(int index) => _restockService.BuyCar(Session, index);
 
     private GameState GetActiveSession()
     {

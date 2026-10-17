@@ -60,7 +60,7 @@ while (restocking)
   var input = Console.ReadLine();
   if (input?.ToLower() == "r")
   {
-    RollStatus rollStatus = gameService.RollCars();
+    RollStatus rollStatus = gameService.RollNewCarBatch();
     if (rollStatus is RollStatus.InsufficientFunds)
     {
       Console.ForegroundColor = ConsoleColor.DarkYellow;

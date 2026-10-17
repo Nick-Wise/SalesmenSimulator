@@ -37,7 +37,7 @@ public class GameState(Owner owner, Store store)
     }
 
     public void SetBatch(IEnumerable<Car> batch) => _currentBatch = batch.ToList();
-    public void RemoveFromBatch(int index)
+    public void RemoveCarFromBatch(int index)
     {
         if (index < 0 || index >= _currentBatch.Count())
         {
