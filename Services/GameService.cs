@@ -14,8 +14,8 @@ internal class GameService : IGameService
 {
     private readonly ISessionFactory _sessionFactory;
     private readonly IRestockService _restockService;
-    private GameState? _session;
-    private protected GameState Session => GetActiveSession();
+    private GameState? _gameState;
+    private protected GameState GameState => GetActiveGameState();
 
     public GameService(ISessionFactory sessionFactory, IRestockService restockService)
     {
@@ -24,36 +24,36 @@ internal class GameService : IGameService
     }
     public GameStartResult StartNewGame(string ownerName, string storeName)
     {
-        _session = _sessionFactory.Create(ownerName, storeName);
+        _gameState = _sessionFactory.Create(ownerName, storeName);
 
-        return new GameStartResult(_session.Owner.Name, _session.Store.Name);
+        return new GameStartResult(_gameState.Owner.Name, _gameState.Store.Name);
     }
 
     public GameDisplayModel GetGameDisplayModel()
     {
         return new GameDisplayModel
         (
-            Session.Owner.Balance,
-            Session.Store.Inventory,
-            Session.Store.Capacity
+            GameState.Owner.Balance,
+            GameState.Store.Inventory,
+            GameState.Store.Capacity
         );
     }
 
-    public RestockStatus StartRestock() => _restockService.StartRestock(Session);
+    public RestockStatus StartRestock() => _restockService.StartRestock(GameState);
 
-    public RollStatus RollNewCarBatch() => _restockService.RollNewCarBatch(Session);
+    public RollStatus RollNewCarBatch() => _restockService.RollNewCarBatch(GameState);
 
-    public RollDisplayModel GetRollDisplayModel() => new RollDisplayModel(Session.CurrentBatch, Session.CurrentRerollCost);
+    public RollDisplayModel GetRollDisplayModel() => new RollDisplayModel(GameState.CurrentBatch, GameState.CurrentRerollCost);
 
-    public BuyStatus BuyCar(int index) => _restockService.BuyCar(Session, index);
+    public BuyStatus BuyCar(int index) => _restockService.BuyCar(GameState, index);
 
-    private GameState GetActiveSession()
+    private GameState GetActiveGameState()
     {
-        if (_session is null)
+        if (_gameState is null)
         {
             throw new InvalidOperationException("No active game session.");
         }
-        return _session;
+        return _gameState;
     }
 
 }

@@ -6,7 +6,7 @@ public interface ISessionFactory
     GameState Load();
 }
 
-public class SessionFactory : ISessionFactory
+public class GameStateFactory : ISessionFactory
 {
     public GameState Create(string ownerName, string storeName)
     {
