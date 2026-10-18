@@ -15,6 +15,7 @@ internal class GameService : IGameService
     private readonly ISessionFactory _sessionFactory;
     private readonly IRestockService _restockService;
     private GameState? _gameState;
+    private RestockState? _restockState;
     private protected GameState GameState => GetActiveGameState();
 
     public GameService(ISessionFactory sessionFactory, IRestockService restockService)
@@ -39,11 +40,29 @@ internal class GameService : IGameService
         );
     }
 
-    public RestockStatus StartRestock() => _restockService.StartRestock(GameState);
+    public RestockStatus StartRestock()
+    {
+        if (GameState.Store.IsFull())
+        {
+            return RestockStatus.InventoryFull;
+        }
+
+        _restockState = new RestockState();
+
+       return _restockService.StartRestock(_restockState);
+    }
 
     public RollStatus RollNewCarBatch() => _restockService.RollNewCarBatch(GameState);
 
-    public RollDisplayModel GetRollDisplayModel() => new RollDisplayModel(GameState.CurrentBatch, GameState.CurrentRerollCost);
+    public RollDisplayModel GetRollDisplayModel()
+    {
+        if(_restockState is null)
+        {
+            throw new InvalidOperationException("Restock process has not been started.");
+        }
+
+        return new RollDisplayModel(_restockState.CurrentBatch, _restockState.RerollCost);
+    }
 
     public BuyStatus BuyCar(int index) => _restockService.BuyCar(GameState, index);
 

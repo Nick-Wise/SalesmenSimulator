@@ -4,33 +4,27 @@ namespace SalesmenSimulator.Services;
 
 public interface IRestockService
 {
-    public RestockStatus StartRestock(GameState gameState);
+    public RestockStatus StartRestock(RestockState restockState);
     public RollStatus RollNewCarBatch(GameState gameState);
     public BuyStatus BuyCar(GameState gameState, int index);
 }
 
-public class RestockService(ICarGeneratorService carGenerator) : IRestockService
+public class RestockService(ICarGeneratorService carGenerator, IRestockState restockState) : IRestockService
 {
     private const int _batchSize = 3;
-    private const decimal BasePrice = 100;
+    
    
-    public RestockStatus StartRestock(GameState gameState)
+    public RestockStatus StartRestock(RestockState restockState)
     {
-        if (gameState.Store.IsFull())
-        {
-            return RestockStatus.InventoryFull;
-        }
-        gameState.ResetRerolls();
+        restockState.ResetRerolls();
         List<Car> batch = RollBatch();
-        gameState.SetBatch(batch);
-        gameState.UpdateRerollCost(CalculateRerollCost(gameState.RerollsUsed));
+        restockState.SetBatch(batch);
         return RestockStatus.Success;
     }
 
     public RollStatus RollNewCarBatch(GameState gameState)
     {
-        decimal rerollCost = gameState.CurrentRerollCost;
-        WithdrawResult result = gameState.Owner.TryWithdrawCash(rerollCost);
+        WithdrawResult result = gameState.Owner.TryWithdrawCash(restockState.RerollCost);
 
         if (!result.Success)
         {
@@ -38,11 +32,9 @@ public class RestockService(ICarGeneratorService carGenerator) : IRestockService
         }
 
         var batch = RollBatch();
-        gameState.SetBatch(batch);
+        restockState.SetBatch(batch);
 
-        gameState.IncrementRerolls();
-        decimal nextRerollCost = CalculateRerollCost(gameState.RerollsUsed);
-        gameState.UpdateRerollCost(nextRerollCost);
+        restockState.IncrementRerolls();
 
         return RollStatus.Success;
     }
@@ -53,14 +45,14 @@ public class RestockService(ICarGeneratorService carGenerator) : IRestockService
         {
             return BuyStatus.InvalidIndex;
         }
-        Car carToBuy = gameState.CurrentBatch[index];
+        Car carToBuy = restockState.CurrentBatch[index];
         WithdrawResult result = gameState.Owner.TryWithdrawCash(carToBuy.BuyPrice);
         if (!result.Success)
         {
             return BuyStatus.InsufficientFunds;
         }
         gameState.Store.Inventory.Add(carToBuy);
-        gameState.RemoveCarFromBatch(index);
+        restockState.RemoveCarFromBatch(index);
         return BuyStatus.Success;
     }
 
@@ -74,5 +66,5 @@ public class RestockService(ICarGeneratorService carGenerator) : IRestockService
         return batch;
     }
 
-    private decimal CalculateRerollCost(int numberOfRerolls) => BasePrice * (numberOfRerolls + 1);
+   
 }
