@@ -67,7 +67,7 @@ internal class GameService : IGameService
 
     public RollDisplayModel GetRollDisplayModel()
     {
-        if(_restockState is null)
+        if(RestockState is null)
         {
             throw new InvalidOperationException("Restock process has not been started.");
         }
@@ -88,7 +88,7 @@ internal class GameService : IGameService
             return BuyStatus.InsufficientFunds;
         }
         GameState.Store.Inventory.Add(carToBuy);
-        _restockState.RemoveCarFromBatch(index);
+        RestockState.RemoveCarFromBatch(index);
         return BuyStatus.Success;
     }
 
