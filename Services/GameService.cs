@@ -72,7 +72,7 @@ internal class GameService : IGameService
             throw new InvalidOperationException("Restock process has not been started.");
         }
 
-        return new RollDisplayModel(RestockState.CurrentBatch, RestockState.RerollCost);
+        return new RollDisplayModel(RestockState.GetBatch(), RestockState.RerollCost);
     }
 
     public BuyStatus BuyCar(int index)
@@ -81,7 +81,7 @@ internal class GameService : IGameService
         {
             return BuyStatus.InvalidIndex;
         }
-        Car carToBuy = RestockState.CurrentBatch[index];
+        Car carToBuy = RestockState.GetCar(index);
         WithdrawResult result = GameState.Owner.TryWithdrawCash(carToBuy.BuyPrice);
         if (!result.Success)
         {

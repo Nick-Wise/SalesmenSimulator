@@ -9,7 +9,7 @@ public interface IRestockService
 
 }
 
-public class RestockService(ICarGeneratorService carGenerator, IRestockState restockState) : IRestockService
+public class RestockService(ICarGeneratorService carGenerator) : IRestockService
 {
     public RestockStatus StartRestock(RestockState restockState)
     {
