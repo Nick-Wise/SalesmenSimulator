@@ -19,6 +19,8 @@ public class RestockState : IRestockState
     public decimal RerollCost => CalculateRerollCost(RerollsUsed);
     public IReadOnlyList<Car> CurrentBatch => _currentBatch;
 
+    public const int BatchSize = 3;
+
     public void ResetRerolls()
     {
         RerollsUsed = 0;

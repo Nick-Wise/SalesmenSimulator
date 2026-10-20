@@ -17,6 +17,7 @@ internal class GameService : IGameService
     private GameState? _gameState;
     private RestockState? _restockState;
     private protected GameState GameState => GetActiveGameState();
+    private protected RestockState RestockState => EnsureRestockState();
 
     public GameService(ISessionFactory sessionFactory, IRestockService restockService)
     {
@@ -49,10 +50,20 @@ internal class GameService : IGameService
 
         _restockState = new RestockState();
 
-       return _restockService.StartRestock(_restockState);
+       return _restockService.StartRestock(RestockState);
     }
 
-    public RollStatus RollNewCarBatch() => _restockService.RollNewCarBatch(GameState);
+    public RollStatus RollNewCarBatch()
+    {
+        WithdrawResult result = GameState.Owner.TryWithdrawCash(RestockState.RerollCost);
+
+        if (!result.Success)
+        {
+            return RollStatus.InsufficientFunds;
+        }
+
+        return _restockService.RollNewCarBatch(RestockState);
+    }
 
     public RollDisplayModel GetRollDisplayModel()
     {
@@ -61,10 +72,34 @@ internal class GameService : IGameService
             throw new InvalidOperationException("Restock process has not been started.");
         }
 
-        return new RollDisplayModel(_restockState.CurrentBatch, _restockState.RerollCost);
+        return new RollDisplayModel(RestockState.CurrentBatch, RestockState.RerollCost);
     }
 
-    public BuyStatus BuyCar(int index) => _restockService.BuyCar(GameState, index);
+    public BuyStatus BuyCar(int index)
+    {
+        if (index < 0 || index >= RestockState.BatchSize)
+        {
+            return BuyStatus.InvalidIndex;
+        }
+        Car carToBuy = RestockState.CurrentBatch[index];
+        WithdrawResult result = GameState.Owner.TryWithdrawCash(carToBuy.BuyPrice);
+        if (!result.Success)
+        {
+            return BuyStatus.InsufficientFunds;
+        }
+        GameState.Store.Inventory.Add(carToBuy);
+        _restockState.RemoveCarFromBatch(index);
+        return BuyStatus.Success;
+    }
+
+    private RestockState EnsureRestockState()
+    {
+        if (_restockState is null)
+        {
+            throw new InvalidOperationException("Restock process has not been started.");
+        }
+        return _restockState;
+    }
 
     private GameState GetActiveGameState()
     {
